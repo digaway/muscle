@@ -20,6 +20,17 @@ jobs:
           pip install --upgrade pip
           pip install buildozer cython==0.29.34
 
+      - name: Clean old buildozer cache
+        run: rm -rf ~/.buildozer/
+
+      - name: Clone python-for-android mirror (Gitee)
+        run: |
+          mkdir -p .buildozer/android/platform/
+          # 如果目录已存在则清空，避免残留
+          rm -rf .buildozer/android/platform/python-for-android
+          # 浅克隆 Gitee 镜像的 main 分支，速度快
+          git clone --depth 1 -b main https://gitee.com/mirrors/python-for-android.git .buildozer/android/platform/python-for-android
+
       - name: Build APK
         run: buildozer -v android debug
 

@@ -27,17 +27,23 @@ jobs:
           pip install --upgrade pip
           pip install buildozer cython==0.29.34
 
-      - name: Pre-clone python-for-android from Gitee mirror
+      - name: Pre-clone python-for-android from Gitee (no proxy needed)
         run: |
-          # 在 Buildozer 期望的目录下预克隆 Gitee 镜像（国内直连，无需代理）
+          # 关键：直接克隆 Gitee 镜像到 Buildozer 期望的精确路径
+          # 这样 Buildozer 检测到目录已存在就不会再去 GitHub 克隆
           mkdir -p .buildozer/android/platform/
-          git clone --depth 1 -b master https://gitee.com/mirrors/python-for-android.git .buildozer/android/platform/python-for-android
+          rm -rf .buildozer/android/platform/python-for-android
+          git clone --depth 1 -b master https://gitee.com/mirrors/python-for-android.git \
+            .buildozer/android/platform/python-for-android
 
       - name: Build APK
-        env:
-          JAVA_HOME: /usr/lib/jvm/temurin-17-jdk-amd64
-          PATH: /usr/lib/jvm/temurin-17-jdk-amd64/bin:$PATH
-        run: buildozer -v android debug
+        run: |
+          # 关键：把 JDK 17 的 bin 放到 PATH 最前面，彻底覆盖系统默认的 JDK 11
+          export JAVA_HOME=/usr/lib/jvm/temurin-17-jdk-amd64
+          export PATH="$JAVA_HOME/bin:$PATH"
+          java -version
+          javac -version
+          buildozer -v android debug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4

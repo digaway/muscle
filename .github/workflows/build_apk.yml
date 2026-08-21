@@ -26,12 +26,17 @@ jobs:
       - name: Clone python-for-android mirror (Gitee)
         run: |
           mkdir -p .buildozer/android/platform/
-          # 清空旧目录避免残留
           rm -rf .buildozer/android/platform/python-for-android
-          # 克隆 Gitee 镜像的 master 分支
           git clone --depth 1 -b master https://gitee.com/mirrors/python-for-android.git .buildozer/android/platform/python-for-android
 
+      - name: Configure Global Git Proxy
+        run: |
+          git config --global url."https://ghproxy.com/https://github.com/".insteadOf "https://github.com/"
+
       - name: Build APK
+        env:
+          HTTP_PROXY: http://ghproxy.com:443
+          HTTPS_PROXY: http://ghproxy.com:443
         run: buildozer -v android debug
 
       - name: Upload APK

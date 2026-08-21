@@ -1,26 +1,19 @@
-name: Build Kivy APK
+name: Build_APK
 
 on:
   workflow_dispatch:
 
 jobs:
   build-android:
-    name: Build for Android
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Build with Buildozer
-        uses: ArtemSBulgakov/buildozer-action@v1
-        id: buildozer
+        
+      - name: Buildozer-Kivy-Apk-Creator
+        uses: wildspider57389928/Buildozer-Kivy-APK_Creator@4.0.0
         with:
+          project-dir: .
           command: buildozer android debug
-          buildozer_version: stable
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: muscle-tracker-apk
-          path: ${{ steps.buildozer.outputs.filename }}
-          retention-days: 30

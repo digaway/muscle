@@ -23,8 +23,10 @@ android.p4a_branch = master
 android.p4a_source_dir = /home/runner/work/muscle/muscle/.buildozer/android/platform/python-for-android
 android.p4a_update = False
 
+icon.filename = %(source.dir)s/icon.jpg
+
 [buildozer]
 log_level = 1
 pip_index_url = https://pypi.tuna.tsinghua.edu.cn/simple
 
-icon.filename = %(source.dir)s/icon.jpg
+

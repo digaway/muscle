@@ -22,7 +22,7 @@ android.sdk_repo = https://mirrors.cloud.tencent.com/android/repository/
 android.ndk_repo = https://mirrors.cloud.tencent.com/android/repository/
 
 
-icon.filename = %(source.dir)s/icon.png
+icon.filename = %(source.dir)s/icon.jpg
 
 android.permissions =
 

@@ -11,7 +11,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Java 17
-        uses: actions/setup-java@v4
+        uses: actions: setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
@@ -37,13 +37,13 @@ jobs:
       - name: Clean old buildozer cache
         run: rm -rf ~/.buildozer/
 
-      - name: Configure Git Proxy & Clone p4a mirror
+      - name: Clone python-for-android mirror (Gitee)
         run: |
-          # 配置全局 Git 代理加速
-          git config --global url."https://ghproxy.com/https://github.com/".insteadOf "https://github.com/"
-          # 提前手动克隆 python-for-android 的 Gitee 镜像到指定目录
           mkdir -p .buildozer/android/platform/
-          git clone https://gitee.com/mirrors/python-for-android.git .buildozer/android/platform/python-for-android
+          # 如果目录已存在则清空，避免残留
+          rm -rf .buildozer/android/platform/python-for-android
+          # 浅克隆 Gitee 镜像的 main 分支，速度快
+          git clone --depth 1 -b main https://gitee.com/mirrors/python-for-android.git .buildozer/android/platform/python-for-android
 
       - name: Build APK
         run: |

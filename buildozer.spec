@@ -14,6 +14,13 @@ android.api = 33
 android.minapi = 21
 android.ndk = 25b
 android.archs = arm64-v8a, armeabi-v7a
+# 自动接受 Android SDK 许可协议
+android.accept_sdk_license = True
+
+# 如果你在国内，网络下载 Google 资源容易失败，建议加上腾讯镜像源加速
+android.sdk_repo = https://mirrors.cloud.tencent.com/android/repository/
+android.ndk_repo = https://mirrors.cloud.tencent.com/android/repository/
+
 
 icon.filename = %(source.dir)s/icon.png
 

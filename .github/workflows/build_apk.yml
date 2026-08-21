@@ -10,46 +10,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Java 17
-        uses: actions: setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-
-      - name: Install system dependencies
-        run: |
-          sudo apt update
-          sudo apt install -y git zip unzip python3-pip \
-            autoconf libtool pkg-config zlib1g-dev \
-            libncurses5-dev libncursesw5-dev libtinfo6 \
-            cmake libffi-dev libssl-dev automake autopoint gettext
 
       - name: Install Buildozer
         run: |
           pip install --upgrade pip
           pip install buildozer cython==0.29.34
 
-      - name: Clean old buildozer cache
-        run: rm -rf ~/.buildozer/
-
-      - name: Clone python-for-android mirror (Gitee)
-        run: |
-          mkdir -p .buildozer/android/platform/
-          # 如果目录已存在则清空，避免残留
-          rm -rf .buildozer/android/platform/python-for-android
-          # 浅克隆 Gitee 镜像的 main 分支，速度快
-          git clone --depth 1 -b main https://gitee.com/mirrors/python-for-android.git .buildozer/android/platform/python-for-android
-
       - name: Build APK
-        run: |
-          export JAVA_HOME=/usr/lib/jvm/temurin-17-jdk-amd64
-          export PATH=$JAVA_HOME/bin:$PATH
-          yes | buildozer -v android debug
+        run: buildozer -v android debug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4

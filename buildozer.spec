@@ -14,11 +14,9 @@ android.ndk = 25b
 android.archs = arm64-v8a, armeabi-v7a
 android.permissions =
 android.accept_sdk_license = True
-android.sdk_repo = https://mirrors.cloud.tencent.com/android/repository/
-android.ndk_repo = https://mirrors.cloud.tencent.com/android/repository/
 
 icon.filename = %(source.dir)s/icon.jpg
 
 [buildozer]
 log_level = 1
-pip_index_url = https://pypi.tuna.tsinghua.edu.cn/simple
+

@@ -1,0 +1,10 @@
+name: Clear Cache
+on:
+  workflow_dispatch:
+jobs:
+  clear:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - uses: toshimaru/delete-action-cache@main

@@ -4,58 +4,23 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-android:
+    name: Build for Android
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Build with Buildozer
+        uses: ArtemSBulgakov/buildozer-action@v1
+        id: buildozer
         with:
-          python-version: '3.10'
+          command: buildozer android debug
+          buildozer_version: stable
 
-      - name: Install Buildozer
-        run: |
-          pip install --upgrade pip
-          pip install buildozer cython==0.29.34
-
-      - name: Clean old buildozer cache
-        run: rm -rf ~/.buildozer/
-
-      - name: Clone python-for-android mirror (Gitee)
-        run: |
-          mkdir -p .buildozer/android/platform/
-          rm -rf .buildozer/android/platform/python-for-android
-          git clone --depth 1 -b master https://gitee.com/mirrors/python-for-android.git .buildozer/android/platform/python-for-android
-
-      - name: Hack Buildozer source code to use Gitee mirror
-        run: |
-          # 找到 Buildozer 的 android.py 源码文件
-          ANDROID_PY=$(find /opt/hostedtoolcache/Python/3.10.21/x64/lib/python3.10/site-packages/buildozer -name "android.py")
-          echo "Patching $ANDROID_PY"
-          
-          # 将默认的 GitHub 地址替换为 Gitee 镜像
-          sed -i 's|https://github.com/kivy/python-for-android.git|https://gitee.com/mirrors/python-for-android.git|g' "$ANDROID_PY"
-          
-          # 将默认的分支强制设为 master（Gitee 镜像的分支名）
-          sed -i "s|p4a_branch = 'master'|p4a_branch = 'master' # patched|g" "$ANDROID_PY"
-          
-          echo "Buildozer source code patched successfully!"
-
-      - name: Configure Global Git Proxy
-        run: |
-          git config --global url."https://ghproxy.com/https://github.com/".insteadOf "https://github.com/"
-
-      - name: Build APK
-        env:
-          HTTP_PROXY: http://ghproxy.com:443
-          HTTPS_PROXY: http://ghproxy.com:443
-        run: buildozer -v android debug
-
-      - name: Upload APK
+      - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: muscle-tracker-apk
-          path: bin/*.apk
+          path: ${{ steps.buildozer.outputs.filename }}
           retention-days: 30

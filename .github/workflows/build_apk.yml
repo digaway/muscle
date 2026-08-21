@@ -1,7 +1,7 @@
 name: Build Kivy APK
 
 on:
-  workflow_dispatch:  # 允许在 GitHub Actions 页面手动触发
+  workflow_dispatch:
 
 jobs:
   build:
@@ -34,8 +34,16 @@ jobs:
           pip install --upgrade pip
           pip install buildozer cython==0.29.34
 
-      - name: Clean old buildozer cache (avoid failed-cache reuse)
+      - name: Clean old buildozer cache
         run: rm -rf ~/.buildozer/
+
+      - name: Configure Git Proxy & Clone p4a mirror
+        run: |
+          # 配置全局 Git 代理加速
+          git config --global url."https://ghproxy.com/https://github.com/".insteadOf "https://github.com/"
+          # 提前手动克隆 python-for-android 的 Gitee 镜像到指定目录
+          mkdir -p .buildozer/android/platform/
+          git clone https://gitee.com/mirrors/python-for-android.git .buildozer/android/platform/python-for-android
 
       - name: Build APK
         run: |
